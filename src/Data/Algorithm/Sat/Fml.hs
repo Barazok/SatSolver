@@ -29,16 +29,9 @@ data Fml a = Or     (Fml a) (Fml a)
 
 -- |'toCNF' @f@ Transform f to Conjonctive Normal Formula (CNF).
 toCNF :: Fml a -> Fml a
-toCNF f
-    | Equiv a b         <- f = And (Or (toCNF a) (Not (toCNF b))) (Or (Not (toCNF a)) (toCNF b))
-    | XOr   a b         <- f = And (Or (toCNF a) (toCNF b)) (Or (Not (toCNF a)) (Not (toCNF b)))
-    | And   a (Or b  c) <- f = Or  (And (toCNF a) (toCNF b)) (And (toCNF a) (toCNF c))
-    | Or    a (And b c) <- f = And (Or  (toCNF a) (toCNF b)) (Or  (toCNF a) (toCNF c))
-    | Imply a b         <- f = Or  (Not (toCNF a)) (toCNF b)
-    | Or    a b         <- f = Or  (toCNF a) (toCNF b)
-    | And   a b         <- f = And (toCNF a) (toCNF b)
-    | Not   a           <- f = Not (toCNF a)
-    | Final a           <- f = f
+toCNF =  aux . reduce
+    where
+        aux = Not
 
 reduce :: Fml a -> Fml a
 reduce f
