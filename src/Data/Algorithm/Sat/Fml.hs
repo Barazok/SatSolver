@@ -6,6 +6,8 @@ module Data.Algorithm.Sat.Fml (
     , mkVar
     -- * Converting
     , toCNF
+    , multAnd
+    , multOr
     -- * Querying
     , vars
     -- * Showing
@@ -15,6 +17,7 @@ module Data.Algorithm.Sat.Fml (
 import qualified Data.Algorithm.Sat.Var as Var
 import qualified Data.List as List
 
+-- |Formula type definition.
 data Fml a = Or     (Fml a) (Fml a)
            | And    (Fml a) (Fml a)
            | Imply  (Fml a) (Fml a)
@@ -24,6 +27,7 @@ data Fml a = Or     (Fml a) (Fml a)
            | Final  (Var.Var a)
            deriving (Show,Eq,Ord)
 
+-- |'toCNF' @f@ Transform f to Conjonctive Normal Formula (CNF).
 toCNF :: Fml a-> Fml a
 toCNF f
     | Equiv a b         <- f = And (Or (toCNF a) (Not (toCNF b))) (Or (Not (toCNF a)) (toCNF b))
@@ -46,9 +50,14 @@ getVars f
     | Not a     <- f = getVars a
     | Final a   <- f = [a]
 
+-- |'vars' @f@ returns all variable which are in @f@.
+--
+-- >>> let v = vars (And (Final (mk 'A')) (Final (mk 'B')))
+-- [Var 'A', Var 'B']
 vars :: (Eq a) => Fml a -> [Var.Var a]
 vars f = List.nub (getVars f)
 
+-- |'prettyPrinter' @f@ returns a pretty string of @f@
 prettyPrinter :: (Show a) => Fml a -> String
 prettyPrinter f
     | Or    a b <- f = "("    ++ prettyPrinter a ++ " OR "    ++ prettyPrinter b ++ ")"
@@ -59,13 +68,19 @@ prettyPrinter f
     | Not   a   <- f = "NOT " ++ prettyPrinter a
     | Final a   <- f = show a
 
+-- |'mkVar' @v@ returns a formula with @v@ value
+--
+-- >>> let v = mkVar 'A'
+-- Var 'A'
 mkVar :: a -> Fml a
 mkVar a = Final (Var.mk a)
 
+-- |'multOr' @v@ returns a Or formula composed by all formulas
 multOr :: [Fml a] -> Fml a
 multOr [f] = f
 multOr (f:fs) = Or f (multOr fs)
 
+-- |'multAnd' @v@ returns a And formula composed by all formulas
 multAnd :: [Fml a] -> Fml a
 multAnd [f] = f
 multAnd (f:fs) = And f (multAnd fs)
