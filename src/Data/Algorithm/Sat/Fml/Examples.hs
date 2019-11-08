@@ -10,9 +10,9 @@ module Data.Algorithm.Sat.Fml.Examples
 , fml8
 , fml9
 , fml10
-, fml11
-, fml12
-, fml13
+-- , fml11
+-- , fml12
+-- , fml13
   ) where
 
 import qualified Data.Algorithm.Sat.Fml       as Fml
@@ -99,22 +99,22 @@ fml10 = Fml.multAnd [p1, p2, p3, p4]
     p3 = Fml.multOr [Fml.Not vB, Fml.Not vD, Fml.Not vE]
     p4 = Fml.Imply (Fml.Or vA vB) (Fml.And vC vE)
 
-fml11 :: Fml.Fml Char
-fml11 = Fml.And p1 p2
-  where
-    p1 = Fml.multOr [vA, vB, vC, vD, vE, vF]
-    p2 = Fml.Model.noneOf [vA, vC, vE]
+-- fml11 :: Fml.Fml Char
+-- fml11 = Fml.And p1 p2
+--   where
+--     p1 = Fml.multOr [vA, vB, vC, vD, vE, vF]
+--     p2 = Fml.Model.noneOf [vA, vC, vE]
 
-fml12 :: Fml.Fml Char
-fml12 = Fml.And p1 p2
-  where
-    p1 = Fml.And (Fml.Or (Fml.Not vA) (Fml.Not vB)) (Fml.Or vC (Fml.Not vB))
-    p2 = Fml.Model.allOf [vA, vB]
+-- fml12 :: Fml.Fml Char
+-- fml12 = Fml.And p1 p2
+--   where
+--     p1 = Fml.And (Fml.Or (Fml.Not vA) (Fml.Not vB)) (Fml.Or vC (Fml.Not vB))
+--     p2 = Fml.Model.allOf [vA, vB]
 
-fml13 :: Fml.Fml Char
-fml13 = Fml.multAnd [p1, p2, p3, p4]
-  where
-    p1 = Fml.Model.exactlyOneOf [vA, vB, vC]
-    p2 = Fml.And vA (Fml.Not vE)
-    p3 = Fml.Imply (Fml.Model.allOf [vA, vB]) (Fml.Model.allOf [vC, vE])
-    p4 = Fml.Equiv (Fml.And vA vC) (Fml.multAnd [vB, vE, vF])
+-- fml13 :: Fml.Fml Char
+-- fml13 = Fml.multAnd [p1, p2, p3, p4]
+--   where
+--     p1 = Fml.Model.exactlyOneOf [vA, vB, vC]
+--     p2 = Fml.And vA (Fml.Not vE)
+--     p3 = Fml.Imply (Fml.Model.allOf [vA, vB]) (Fml.Model.allOf [vC, vE])
+--     p4 = Fml.Equiv (Fml.And vA vC) (Fml.multAnd [vB, vE, vF])

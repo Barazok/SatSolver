@@ -3,12 +3,13 @@ module Data.Algorithm.Sat.Fml.Model (
 ) where
 
 import qualified Data.Algorithm.Sat.Fml as Fml
+import qualified Data.Algorithm.Sat.Var as Var
 
-atLeast :: (Eq t, Num t, Ord a) => t -> [Fml.Fml a] -> Fml.Fml a
+atLeast :: Int -> [Fml.Fml a] -> Fml.Fml a
 atLeast k fs
     | k >= length fs = Fml.multAnd fs
     | k == 1 = Fml.multOr fs
-    | otherwise = 
+    | otherwise = fs !! 1
 
 -- anyOf :: (Ord a)=>[Fml.Fml a]-> Fml.Fml a
 
