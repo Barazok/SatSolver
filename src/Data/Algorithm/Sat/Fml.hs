@@ -28,7 +28,7 @@ data Fml a = Or     (Fml a) (Fml a)
            deriving (Show,Eq,Ord)
 
 -- |'toCNF' @f@ Transform f to Conjonctive Normal Formula (CNF).
-toCNF :: Fml a-> Fml a
+toCNF :: Fml a -> Fml a
 toCNF f
     | Equiv a b         <- f = And (Or (toCNF a) (Not (toCNF b))) (Or (Not (toCNF a)) (toCNF b))
     | XOr   a b         <- f = And (Or (toCNF a) (toCNF b)) (Or (Not (toCNF a)) (Not (toCNF b)))
@@ -38,6 +38,16 @@ toCNF f
     | Or    a b         <- f = Or  (toCNF a) (toCNF b)
     | And   a b         <- f = And (toCNF a) (toCNF b)
     | Not   a           <- f = Not (toCNF a)
+    | Final a           <- f = f
+
+reduce :: Fml a -> Fml a
+reduce f
+    | Equiv a b         <- f = And (Or (reduce a) (Not (reduce b))) (Or (Not (reduce a)) (reduce b))
+    | Imply a b         <- f = Or  (Not (reduce a)) (reduce b)
+    | XOr   a b         <- f = And (Or (reduce a) (reduce b)) (Or (Not (reduce a)) (Not (reduce b)))
+    | Or    a b         <- f = Or (reduce a) (reduce b)
+    | And   a b         <- f = And (reduce a) (reduce b)
+    | Not   a           <- f = Not (reduce a)
     | Final a           <- f = f
 
 getVars :: Fml a -> [Var.Var a]
