@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 0489899f55d72dd70e7fc654c945ed19bc7d589ce3edc6beac54f69d5b5015a6
+-- hash: 3638f805799fbce8c1293331c6ad389c5cd378972e979381d42e94c4a561ae35
 
 name:           SatSolver
 version:        0.1.0.0
@@ -27,6 +27,8 @@ source-repository head
 
 library
   exposed-modules:
+      Data.Algorithm.Sat.Fml
+      Data.Algorithm.Sat.Fml.Model
       Data.Algorithm.Sat.Lit
       Data.Algorithm.Sat.Var
   other-modules:

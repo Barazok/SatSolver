@@ -1,7 +1,7 @@
 module Data.Algorithm.Sat.Var
   (
   -- * Type
-  Var(..)
+  Var (..)
 
   -- * Making
 , mk
