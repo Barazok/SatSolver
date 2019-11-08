@@ -1,9 +1,9 @@
 module Data.Algorithm.Sat.Fml (
     toCNF,
-    getVars,
     vars,
     prettyPrinter,
-    Fml (..)
+    Fml (..),
+    mkVar
 ) where
 
 import qualified Data.Algorithm.Sat.Var as Var
@@ -52,3 +52,14 @@ prettyPrinter f
     | XOr a b <- f = "(" ++ prettyPrinter a ++ " XOR " ++ prettyPrinter b ++ ")"
     | Not a <- f = "NOT " ++ prettyPrinter a
     | Final a <- f = show a
+
+mkVar :: a -> Fml a
+mkVar a = Final (Var.mk a)
+
+multOr :: [Fml a] -> Fml a
+multOr [f] = f
+multOr (f:fs) = Or f (multOr fs)
+
+multAnd :: [Fml a] -> Fml a
+multAnd [f] = f
+multAnd (f:fs) = And f (multAnd fs)
