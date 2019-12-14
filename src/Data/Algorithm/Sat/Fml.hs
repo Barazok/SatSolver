@@ -31,7 +31,18 @@ data Fml a = Or     (Fml a) (Fml a)
 toCNF :: Fml a -> Fml a
 toCNF =  aux . reduce
     where
-        aux f = f
+        -- De Morgan
+        aux (Not (Or a b)) = And (Not (aux a)) (Not (aux b))
+        aux (Not (And a b)) = Or (Not (aux a)) (Not (aux b))
+        -- Distributivité
+        aux (Or a (And b c)) = And (Or a b) (Or a c)
+        aux (And a (Or b c)) = Or (And a b) (And a c)
+        aux (Or (And b c) a) = And (Or a b) (Or a c)
+        aux (And (Or b c) a) = Or (And a b) (And a c)
+        -- Cas finaux
+        aux (Or a b) = Or (aux a) (aux b)
+        aux (And a b) = And (aux a) (aux b)
+        aux (Final a) = Final a
 
 reduce :: Fml a -> Fml a
 reduce f
