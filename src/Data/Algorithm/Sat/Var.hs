@@ -11,7 +11,7 @@ module Data.Algorithm.Sat.Var
 newtype Var a = Var { getName :: a } deriving (Eq, Ord)
 
 instance (Show a) => Show (Var a) where
-  show Var { getName = n } = "Var " ++ show n
+  show Var { getName = n } = show n
 
 -- |'mk' @x@ makes the variable with name @x@.
 --
