@@ -43,6 +43,7 @@ toCNF =  aux . reduce
         aux (Or a b) = Or (aux a) (aux b)
         aux (And a b) = And (aux a) (aux b)
         aux (Not (Not a)) = aux a
+        aux (Not a) = Not a
         aux (Final a) = Final a
 
 reduce :: Fml a -> Fml a
