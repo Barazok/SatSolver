@@ -31,7 +31,7 @@ data Fml a = Or     (Fml a) (Fml a)
 toCNF :: Fml a -> Fml a
 toCNF =  aux . reduce
     where
-        aux = Not
+        aux f = f
 
 reduce :: Fml a -> Fml a
 reduce f
