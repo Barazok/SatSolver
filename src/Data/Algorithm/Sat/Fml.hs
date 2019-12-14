@@ -29,22 +29,21 @@ data Fml a = Or     (Fml a) (Fml a)
 
 -- |'toCNF' @f@ Transform f to Conjonctive Normal Formula (CNF).
 toCNF :: Fml a -> Fml a
-toCNF =  aux . reduce
+toCNF = aux . reduce
     where
         -- De Morgan
         aux (Not (Or a b)) = And (Not (aux a)) (Not (aux b))
         aux (Not (And a b)) = Or (Not (aux a)) (Not (aux b))
         -- Distributivité
+        aux (Or (And a b) (And c d)) = multAnd [Or (aux a) (aux c), Or (aux a) (aux d), Or (aux b) (aux c), Or (aux b) (aux d)]
         aux (Or a (And b c)) = And (Or (aux a) (aux b)) (Or (aux a) (aux c))
-        aux (And a (Or b c)) = Or (And (aux a) (aux b)) (And (aux a) (aux c))
         aux (Or (And b c) a) = And (Or (aux a) (aux b)) (Or (aux a) (aux c))
-        aux (And (Or b c) a) = Or (And (aux a) (aux b)) (And (aux a) (aux c))
-        -- Cas finaux
-        aux (Or a b) = Or (aux a) (aux b)
-        aux (And a b) = And (aux a) (aux b)
+        -- Suppression des doublons
         aux (Not (Not a)) = aux a
-        aux (Not a) = Not a
-        aux (Final a) = Final a
+        aux (And a b) = And (aux a) (aux b)
+        aux (Or a b) = Or (aux a) (aux b)
+        aux (Not a) = Not (aux a)
+        aux (Final f) = Final f
 
 reduce :: Fml a -> Fml a
 reduce f
@@ -76,12 +75,12 @@ vars f = List.nub (getVars f)
 -- |'prettyPrinter' @f@ returns a pretty string of @f@
 prettyPrinter :: (Show a) => Fml a -> String
 prettyPrinter f
-    | Or    a b <- f = "("    ++ prettyPrinter a ++ " v "    ++ prettyPrinter b ++ ")"
-    | And   a b <- f = "("    ++ prettyPrinter a ++ " & "   ++ prettyPrinter b ++ ")"
-    | Imply a b <- f = "("    ++ prettyPrinter a ++ " => " ++ prettyPrinter b ++ ")"
-    | Equiv a b <- f = "("    ++ prettyPrinter a ++ " <=> " ++ prettyPrinter b ++ ")"
-    | XOr   a b <- f = "("    ++ prettyPrinter a ++ " + "   ++ prettyPrinter b ++ ")"
-    | Not   a   <- f = "-" ++ prettyPrinter a
+    | Or    a b <- f = "(" ++ prettyPrinter a ++ " | "   ++ prettyPrinter b ++ ")"
+    | And   a b <- f = "(" ++ prettyPrinter a ++ " & "   ++ prettyPrinter b ++ ")"
+    | Imply a b <- f = "(" ++ prettyPrinter a ++ " => "  ++ prettyPrinter b ++ ")"
+    | Equiv a b <- f = "(" ++ prettyPrinter a ++ " <=> " ++ prettyPrinter b ++ ")"
+    | XOr   a b <- f = "(" ++ prettyPrinter a ++ " + "   ++ prettyPrinter b ++ ")"
+    | Not   a   <- f = "~" ++ prettyPrinter a
     | Final a   <- f = show a
 
 -- |'mkVar' @v@ returns a formula with @v@ value
