@@ -1,3 +1,6 @@
+module Data.Algorithm.Sat.Solver.CNFFml.Clause (
+    Clause (..)
+    ) where
 import qualified Data.Algorithm.Sat.Lit as Lit
 import qualified Data.List as L
 

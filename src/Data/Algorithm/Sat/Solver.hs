@@ -10,9 +10,9 @@ import qualified Data.Map as Map
 -- |'solve' @f@ calculate an assignment of the propositional variables that makes
 --              the formula f logically true
 solve :: (Ord a) => Fml.Fml a -> Maybe (Assignment.Assignment a)
-solve f = 
+solve f = Just Assignment.mkEmpty
 
-setLitteral :: (Ord a) => Fml.Fml a -> Map Fml.fml [Integer]
+{- setLitteral :: (Ord a) => Fml.Fml a -> Map Fml.fml [Integer]
 setLitteral f
     | Final a <- f = Assignment.insert a Assignment.mkEmpty
 
@@ -24,4 +24,4 @@ getMaxFromMap m = go [] Nothing (Map.toList m)
     go ks (Just u) ((k,v):rest)
         | v < u     = go ks     (Just u) rest
         | v > u     = go [k]    (Just v) rest
-        | otherwise = go (k:ks) (Just v) rest
+        | otherwise = go (k:ks) (Just v) rest -}

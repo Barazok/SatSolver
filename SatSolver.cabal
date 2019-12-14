@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 9017265627b8e03b42ba9cba61bf933fe037bd12da06235e168e692225d41eb2
+-- hash: bb85b59e6a70405c644f5317f4ca18bdade9e0fb17d72fd02b563ce6994febd5
 
 name:           SatSolver
 version:        0.1.0.0
@@ -27,10 +27,14 @@ source-repository head
 
 library
   exposed-modules:
+      Data.Algorithm.Sat.Assignment
       Data.Algorithm.Sat.Fml
       Data.Algorithm.Sat.Fml.Examples
       Data.Algorithm.Sat.Fml.Model
       Data.Algorithm.Sat.Lit
+      Data.Algorithm.Sat.Solver
+      Data.Algorithm.Sat.Solver.CNFFml
+      Data.Algorithm.Sat.Solver.CNFFml.Clause
       Data.Algorithm.Sat.Var
   other-modules:
       Paths_SatSolver
@@ -38,6 +42,7 @@ library
       src
   build-depends:
       base >=4.7 && <5
+    , containers
   default-language: Haskell2010
 
 executable SatSolver-exe
@@ -50,6 +55,8 @@ executable SatSolver-exe
   build-depends:
       SatSolver
     , base >=4.7 && <5
+    , containers
+
   default-language: Haskell2010
 
 test-suite SatSolver-test
@@ -63,4 +70,6 @@ test-suite SatSolver-test
   build-depends:
       SatSolver
     , base >=4.7 && <5
+    , containers
+
   default-language: Haskell2010
