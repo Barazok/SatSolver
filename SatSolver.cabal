@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: bb85b59e6a70405c644f5317f4ca18bdade9e0fb17d72fd02b563ce6994febd5
+-- hash: f43c65a16e4b2a3046bbe6c5eb98e684fad26ef16705b2d895c89a27692c0fa6
 
 name:           SatSolver
 version:        0.1.0.0
@@ -56,7 +56,6 @@ executable SatSolver-exe
       SatSolver
     , base >=4.7 && <5
     , containers
-
   default-language: Haskell2010
 
 test-suite SatSolver-test
@@ -71,5 +70,4 @@ test-suite SatSolver-test
       SatSolver
     , base >=4.7 && <5
     , containers
-
   default-language: Haskell2010
