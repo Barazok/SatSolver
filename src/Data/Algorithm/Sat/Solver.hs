@@ -1,27 +1,31 @@
 module Data.Algorithm.Sat.Solver(
-    solve
+    getVars,
+--    solve
 ) where
 
+import qualified Data.Algorithm.Sat.Var as Var
 import qualified Data.Algorithm.Sat.Fml as Fml
 import qualified Data.Algorithm.Sat.Assignment as Assignment
 import qualified Data.Algorithm.Sat.Lit as Lit
-import qualified Data.Map as Map
+import qualified Data.Map.Strict as Map
+
+
+getVars :: Fml.Fml a -> [Fml.Fml a]
+getVars f
+    | Fml.Or a b    <- f = getVars a ++ getVars b
+    | Fml.And a b   <- f = getVars a ++ getVars b
+    | Fml.Imply a b <- f = getVars a ++ getVars b
+    | Fml.Equiv a b <- f = getVars a ++ getVars b
+    | Fml.XOr a b   <- f = getVars a ++ getVars b
+    | Fml.Not (Fml.Final a)   <- f = [f]
+    | Fml.Not a     <- f = getVars a
+    | Fml.Final a   <- f = [f]
 
 -- |'solve' @f@ calculate an assignment of the propositional variables that makes
 --              the formula f logically true
-solve :: (Ord a) => Fml.Fml a -> Maybe (Assignment.Assignment a)
-solve f = Just Assignment.mkEmpty
+-- solve :: (Ord a) => Fml.Fml a -> Maybe (Assignment.Assignment a) 
+solve f = maximum (getVars (Fml.toCNF f))
 
-{- setLitteral :: (Ord a) => Fml.Fml a -> Map Fml.fml [Integer]
-setLitteral f
-    | Final a <- f = Assignment.insert a Assignment.mkEmpty
-
-getMaxFromMap :: (Ord a) => Map Fml.Fml [Integer] => Maybe (Fml.Fml a)
-getMaxFromMap m = go [] Nothing (Map.toList m)
-  where
-    go ks _        []           = ks 
-    go ks Nothing  ((k,v):rest) = go (k:ks) (Just v) rest
-    go ks (Just u) ((k,v):rest)
-        | v < u     = go ks     (Just u) rest
-        | v > u     = go [k]    (Just v) rest
-        | otherwise = go (k:ks) (Just v) rest -}
+solve (Fml.Final a) = Just (Assignment.insert (Lit.mkTrue a) empty)
+solve (Fml.Not (Fml.Final a)) = Just (Assignment.insert (Lit.mkFalse a) empty)
+solve (Fml.Or a b) = solve a 
