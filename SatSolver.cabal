@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: f43c65a16e4b2a3046bbe6c5eb98e684fad26ef16705b2d895c89a27692c0fa6
+-- hash: c917cc8028f6993f79d4dd3fb5ae538d6daf99b7616d4738927141c77a0588ef
 
 name:           SatSolver
 version:        0.1.0.0
@@ -32,6 +32,7 @@ library
       Data.Algorithm.Sat.Fml.Examples
       Data.Algorithm.Sat.Fml.Model
       Data.Algorithm.Sat.Lit
+      Data.Algorithm.Sat.Query
       Data.Algorithm.Sat.Solver
       Data.Algorithm.Sat.Solver.CNFFml
       Data.Algorithm.Sat.Solver.CNFFml.Clause
