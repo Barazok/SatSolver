@@ -7,6 +7,7 @@ import qualified Data.Algorithm.Sat.Var as Var
 import qualified Data.Algorithm.Sat.Fml as Fml
 import qualified Data.Algorithm.Sat.Assignment as Assignment
 import qualified Data.Algorithm.Sat.Lit as Lit
+import qualified Data.Algorithm.Sat.Solver.CNFFml as CNFFml
 import qualified Data.Map.Strict as Map
 
 
@@ -26,6 +27,6 @@ getVars f
 -- solve :: (Ord a) => Fml.Fml a -> Maybe (Assignment.Assignment a) 
 solve f = maximum (getVars (Fml.toCNF f))
 
-solve (Fml.Final a) = Just (Assignment.insert (Lit.mkTrue a) empty)
+{- solve (Fml.Final a) = Just (Assignment.insert (Lit.mkTrue a) empty)
 solve (Fml.Not (Fml.Final a)) = Just (Assignment.insert (Lit.mkFalse a) empty)
-solve (Fml.Or a b) = solve a 
+solve (Fml.Or a b) = solve a  -}
