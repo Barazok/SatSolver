@@ -6,6 +6,8 @@ module Data.Algorithm.Sat.Fml (
     , mkVar
     -- * Converting
     , toCNF
+    , negating
+    , reduce
     , multAnd
     , multOr
     -- * Querying
@@ -29,21 +31,33 @@ data Fml a = Or     (Fml a) (Fml a)
 
 -- |'toCNF' @f@ Transform f to Conjonctive Normal Formula (CNF).
 toCNF :: Fml a -> Fml a
-toCNF = aux . reduce
+toCNF = aux . negating . reduce
     where
-        -- De Morgan
-        aux (Not (Or a b)) = And (Not (aux a)) (Not (aux b))
-        aux (Not (And a b)) = Or (Not (aux a)) (Not (aux b))
-        -- Distributivité
-        aux (Or (And a b) (And c d)) = multAnd [Or (aux a) (aux c), Or (aux a) (aux d), Or (aux b) (aux c), Or (aux b) (aux d)]
-        aux (Or a (And b c)) = And (Or (aux a) (aux b)) (Or (aux a) (aux c))
-        aux (Or (And b c) a) = And (Or (aux a) (aux b)) (Or (aux a) (aux c))
-        -- Suppression des doublons
-        aux (Not (Not a)) = aux a
-        aux (And a b) = And (aux a) (aux b)
-        aux (Or a b) = Or (aux a) (aux b)
-        aux (Not a) = Not (aux a)
-        aux (Final f) = Final f
+        aux (And (Final p) (And q t)) = multAnd([Final p, aux q, aux t])
+        aux (And (Not (Final p)) (And q t)) = multAnd([Not (Final p), aux q, aux t])
+        aux (And (And q t) (Final p)) = multAnd([Final p, aux q, aux t])
+        aux (And (And q t) (Not (Final p))) = multAnd([Not (Final p), aux q, aux t])
+        aux (And (And p c) (And q t)) = multAnd([aux p, aux c, aux q, aux t])
+        aux (Or (Final p) (And q t)) = multAnd([Or (Final p) (aux q), Or (Final p) (aux t)])
+        aux (Or (Not (Final p)) (And q t)) = multAnd([Or (Not (Final p)) (aux q), Or (Final p) (aux t)])
+        aux (Or (And q t) (Final p)) = multAnd([Or (Final p) (aux q), Or (Final p) (aux t)])
+        aux (Or (And q t) (Not (Final p))) = multAnd([Or (Not (Final p)) (aux q), Or (Final p) (aux t)])
+        aux (Or (And p c) (And q t)) = multAnd([Or (aux p) (aux q), Or (aux p) (aux t), Or (aux c) (aux q), Or (aux c) (aux t)])
+        aux (Or a b) = multOr([aux a, aux b])
+        aux (And a b) = multAnd([aux a, aux b])
+        aux (Not (Final a)) = Not (Final a)
+        aux (Final p) = Final p
+
+negating :: Fml a -> Fml a
+negating f
+    | Not (Final a)     <- f = f
+    | Not (Not p)       <- f = negating p
+    | Not (And p q)     <- f = negating (Or (Not (negating p)) (Not (negating q)))
+    | Not (Or p q)      <- f = negating (And (Not (negating p)) (Not (negating q)))
+    | Or    a b         <- f = Or (negating a) (negating b)
+    | And   a b         <- f = And (negating a) (negating b)
+    | Not   a           <- f = Not (negating a)
+    | Final a           <- f = f
 
 reduce :: Fml a -> Fml a
 reduce f
