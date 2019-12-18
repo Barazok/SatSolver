@@ -32,28 +32,24 @@ data Fml a = Or     (Fml a) (Fml a)
 -- |'toCNF' @f@ Transform f to Conjonctive Normal Formula (CNF).
 toCNF :: Fml a -> Fml a
 toCNF = aux . negating . reduce
-    where
-        aux (And (Final p) (And q t)) = multAnd([Final p, aux q, aux t])
-        aux (And (Not (Final p)) (And q t)) = multAnd([Not (Final p), aux q, aux t])
-        aux (And (And q t) (Final p)) = multAnd([Final p, aux q, aux t])
-        aux (And (And q t) (Not (Final p))) = multAnd([Not (Final p), aux q, aux t])
-        aux (And (And p c) (And q t)) = multAnd([aux p, aux c, aux q, aux t])
-        aux (Or (Final p) (And q t)) = multAnd([Or (Final p) (aux q), Or (Final p) (aux t)])
-        aux (Or (Not (Final p)) (And q t)) = multAnd([Or (Not (Final p)) (aux q), Or (Final p) (aux t)])
-        aux (Or (And q t) (Final p)) = multAnd([Or (Final p) (aux q), Or (Final p) (aux t)])
-        aux (Or (And q t) (Not (Final p))) = multAnd([Or (Not (Final p)) (aux q), Or (Final p) (aux t)])
-        aux (Or (And p c) (And q t)) = multAnd([Or (aux p) (aux q), Or (aux p) (aux t), Or (aux c) (aux q), Or (aux c) (aux t)])
-        aux (Or a b) = multOr([aux a, aux b])
-        aux (And a b) = multAnd([aux a, aux b])
-        aux (Not (Final a)) = Not (Final a)
-        aux (Final p) = Final p
+  where
+    aux (Or a b) = multAnd [Or n m | n <- collect (aux a), m <- collect (aux b)]
+      where
+        collect (And (And a b) (And c d)) = collect (And a b) ++ collect (And c d)
+        collect (And a (And b c)) = a : collect (And b c)
+        collect (And (And b c) a) = a : collect (And b c)
+        collect (And a b) = [a, b]
+        collect a = [a]
+    aux (And a b)  = And (aux a) (aux b)
+    aux (Not a) = Not (aux a)
+    aux (Final a) = Final a
 
 negating :: Fml a -> Fml a
 negating f
     | Not (Final a)     <- f = f
-    | Not (Not p)       <- f = negating p
-    | Not (And p q)     <- f = negating (Or (Not (negating p)) (Not (negating q)))
-    | Not (Or p q)      <- f = negating (And (Not (negating p)) (Not (negating q)))
+    | Not (Not a)       <- f = negating a
+    | Not (And a b)     <- f = negating (Or (Not (negating a)) (Not (negating b)))
+    | Not (Or a b)      <- f = negating (And (Not (negating a)) (Not (negating b)))
     | Or    a b         <- f = Or (negating a) (negating b)
     | And   a b         <- f = And (negating a) (negating b)
     | Not   a           <- f = Not (negating a)
