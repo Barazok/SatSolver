@@ -13,7 +13,7 @@ import qualified Data.List as L
 newtype CNFFml a = CNFFml { getClauses :: [Solver.Clause a] }
 
 instance (Show a) => Show (CNFFml a) where
-    show CNFFml { getClauses = ls } = "(" ++ L.intercalate " & " (L.map show ls) ++ ")"
+    show CNFFml { getClauses = ls } = L.intercalate " & " (L.map show ls)
 
 mkCNFFml :: [Solver.Clause a] -> CNFFml a
 mkCNFFml ls = CNFFml ls
