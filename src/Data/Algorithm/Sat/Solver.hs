@@ -1,5 +1,6 @@
 module Data.Algorithm.Sat.Solver(
-    getVars
+    getVarsp
+  , getVars
   , fromFml
 --    solve
 ) where
@@ -11,18 +12,22 @@ import qualified Data.Algorithm.Sat.Lit as Lit
 import qualified Data.Algorithm.Sat.Solver.CNFFml as CNFFml
 import qualified Data.Algorithm.Sat.Solver.CNFFml.Clause as Clause
 import qualified Data.Map.Strict as Map
+import qualified Data.List as List
 
 
-getVars :: Fml.Fml a -> [Fml.Fml a]
-getVars f
-    | Fml.Or a b    <- f = getVars a ++ getVars b
-    | Fml.And a b   <- f = getVars a ++ getVars b
-    | Fml.Imply a b <- f = getVars a ++ getVars b
-    | Fml.Equiv a b <- f = getVars a ++ getVars b
-    | Fml.XOr a b   <- f = getVars a ++ getVars b
-    | Fml.Not (Fml.Final a)   <- f = [f]
-    | Fml.Not a     <- f = getVars a
-    | Fml.Final a   <- f = [f]
+getVarsp :: Fml.Fml a -> [Var.Var a]
+getVarsp f
+    | Fml.Or a b    <- f = getVarsp a ++ getVarsp b
+    | Fml.And a b   <- f = getVarsp a ++ getVarsp b
+    | Fml.Imply a b <- f = getVarsp a ++ getVarsp b
+    | Fml.Equiv a b <- f = getVarsp a ++ getVarsp b
+    | Fml.XOr a b   <- f = getVarsp a ++ getVarsp b
+    | Fml.Not (Fml.Final a)   <- f = [a]
+    | Fml.Not a     <- f = getVarsp a
+    | Fml.Final a   <- f = [a]
+
+getVars :: (Eq a) => Fml.Fml a -> [Var.Var a]
+getVars = List.nub . getVarsp
 
 -- |'solve' @f@ calculate an assignment of the propositional variables that makes
 --              the formula f logically true

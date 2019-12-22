@@ -1,7 +1,7 @@
 module Data.Algorithm.Sat.Query (
-    -- satisfiable,
-    -- satisfyingAssignment,
-    -- satisfyingAssignments,
+    satisfiable,
+    satisfyingAssignment,
+    satisfyingAssignments,
     -- tautology
     ) where
 
@@ -11,15 +11,30 @@ import qualified Data.Algorithm.Sat.Fml as Fml
 import qualified Data.Algorithm.Sat.Solver as Solver
 import qualified Data.Algorithm.Sat.Solver.CNFFml as CNFFml
 import qualified Data.Algorithm.Sat.Solver.CNFFml.Clause as Clause
+import qualified Data.Algorithm.Sat.Var as Var
 
 satisfiable :: (Ord a) => Fml.Fml a -> Bool
 satisfiable = Maybe.isJust . satisfyingAssignment
 
-satisfyingAssignment :: (Ord a) => Fml.Fml a -> Maybe (Assignment.Assignment a)
+satisfyingAssignment :: (Ord a) => Fml.Fml a -> Maybe ([(Var.Var a, Bool)], Bool)
 satisfyingAssignment = Maybe.listToMaybe . satisfyingAssignments
 
-satisfyingAssignments :: (Ord a) => Fml.Fml a -> [Assignment.Assignment a]
-satisfyingAssignments f = []
+-- evaluates an expression
+evaluate :: (Eq a) => Fml.Fml a -> [(Var.Var a, Bool)] -> Bool
+evaluate (Fml.Final f) bs = Maybe.fromJust (lookup f bs)
+evaluate (Fml.Not e) bs = not (evaluate e bs)
+evaluate (Fml.And e1 e2) bs = evaluate e1 bs && evaluate e2 bs
+evaluate (Fml.Or e1 e2) bs = evaluate e1 bs || evaluate e2 bs
+
+bools = [True, False]
+
+-- all possible combinations of variable assignments
+booltable :: [Var.Var v] -> [[(Var.Var v, Bool)]]
+booltable [] = [[]]
+booltable (a:as) = [(a,b) : r | b <- bools, r <- booltable as]
+
+satisfyingAssignments :: Ord a => Fml.Fml a -> [([(Var.Var a, Bool)], Bool)]
+satisfyingAssignments e = [(bs, evaluate e bs) | bs <- booltable (Solver.getVars e)]
 
 -- tautology :: (Ord a) => Fml.Fml a -> Bool
 -- tautology
