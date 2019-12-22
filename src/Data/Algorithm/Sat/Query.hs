@@ -45,11 +45,6 @@ truthtable e = [(bs, evaluate e bs) | bs <- booltable (Fml.vars e)]
 getAllTrue :: (Eq a) => Fml.Fml a -> [([(Var.Var a, Bool)], Bool)]
 getAllTrue = filter (\(_,a) -> a == True) . truthtable . Fml.toCNF
 
-rmdups :: Eq a => [a] -> [a]
-rmdups [] = []
-rmdups (x:xs) | x `elem` xs = rmdups xs
-              | otherwise = x : rmdups xs
-
 extractAllFirst :: Eq a => Fml.Fml a -> [[(Var.Var a, Bool)]]
 extractAllFirst f = [fst n | n <- getAllTrue f]
 
