@@ -6,6 +6,8 @@ module Data.Algorithm.Sat.Lit
   -- * Making
 , mkFalse
 , mkTrue
+, mkTrueAValue
+, mkFalseAValue
 
   -- * Querying
 , getVar
@@ -15,6 +17,7 @@ module Data.Algorithm.Sat.Lit
   ) where
 
 import qualified Data.Algorithm.Sat.Var as Var
+import qualified Data.Algorithm.Sat.Fml as Fml
 
 -- |Literal type definition.
 data Lit a = F (Var.Var a) | T (Var.Var a) deriving (Eq, Ord)
@@ -56,3 +59,9 @@ neg (T v) = F v
 getVar :: Lit a -> Var.Var a
 getVar (F v) = v
 getVar (T v) = v
+
+mkTrueAValue :: (Eq a) => a -> Lit a
+mkTrueAValue a = mkTrue (Fml.vars (Fml.mkVar a) !! 0)
+
+mkFalseAValue :: (Eq a) => a -> Lit a
+mkFalseAValue a = mkFalse (Fml.vars (Fml.mkVar a) !! 0)
