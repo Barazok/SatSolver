@@ -34,7 +34,7 @@ solve (Fml.Not (Fml.Final a)) = Just (Assignment.insert (Lit.mkFalse a) empty)
 solve (Fml.Or a b) = solve a  -}
 
 fromFml :: (Eq a, Ord a) => Fml.Fml a -> CNFFml.CNFFml a
-fromFml f = CNFFml.mkCNFFml (aux (Fml.toCNF f))
+fromFml = CNFFml.mkCNFFml . aux . Fml.toCNF
     where
         aux (Fml.And a b) = aux a ++ aux b
         aux (Fml.Or a b) = [Clause.mkClause ([ c | c <- aux3 a] ++ [d | d <- aux3 b])]
