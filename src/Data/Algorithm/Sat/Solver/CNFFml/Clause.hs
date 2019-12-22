@@ -4,6 +4,7 @@ module Data.Algorithm.Sat.Solver.CNFFml.Clause (
   , uniqueClause
   , numberLitInClause
   , getLiterals
+  , removeLiteralInClause
     ) where
 import qualified Data.Algorithm.Sat.Lit as Lit
 import qualified Data.List as L
@@ -24,3 +25,8 @@ uniqueClause c = 1 == numberLitInClause c
 
 getLiterals :: Clause a -> [Lit.Lit a]
 getLiterals (Clause c) = c
+
+removeLiteralInClause :: (Ord a) => Lit.Lit a -> Clause a -> Clause a
+removeLiteralInClause lit cl
+  | lit `L.elem` (getLiterals cl) = mkClause []
+  | otherwise = cl
