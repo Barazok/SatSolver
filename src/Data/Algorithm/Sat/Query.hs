@@ -16,7 +16,7 @@ import qualified Data.Algorithm.Sat.Var as Var
 satisfiable :: (Ord a) => Fml.Fml a -> Bool
 satisfiable = Maybe.isJust . satisfyingAssignment
 
-satisfyingAssignment :: (Ord a) => Fml.Fml a -> Maybe ([(Var.Var a, Bool)], Bool)
+satisfyingAssignment :: (Ord a) => Fml.Fml a -> Maybe (Assignment.Assignment a)
 satisfyingAssignment = Maybe.listToMaybe . satisfyingAssignments
 
 -- evaluates an expression
@@ -33,8 +33,12 @@ booltable :: [Var.Var v] -> [[(Var.Var v, Bool)]]
 booltable [] = [[]]
 booltable (a:as) = [(a,b) : r | b <- bools, r <- booltable as]
 
-satisfyingAssignments :: Ord a => Fml.Fml a -> [([(Var.Var a, Bool)], Bool)]
-satisfyingAssignments e = [(bs, evaluate e bs) | bs <- booltable (Solver.getVars e)]
+-- variable assignments and corresponding evaluation of an expression
+truthtable :: (Eq a) => Fml.Fml a -> [([(Var.Var a, Bool)], Bool)]
+truthtable e = [(bs, evaluate e bs) | bs <- booltable (Solver.getVars e)]
+
+satisfyingAssignments :: Ord a => Fml.Fml a -> [Assignment.Assignment a]
+satisfyingAssignments f = []
 
 -- tautology :: (Ord a) => Fml.Fml a -> Bool
 -- tautology
