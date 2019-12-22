@@ -39,10 +39,15 @@ fromFml f = CNFFml.mkCNFFml (aux (Fml.toCNF f))
         aux (Fml.And a b) = aux a ++ aux b
         aux (Fml.Or a b) = [Clause.mkClause ([ c | c <- aux3 a] ++ [d | d <- aux3 b])]
             where
-                aux3 (Fml.Or (Fml.Not (Fml.Final a)) (Fml.Final b)) = [Lit.mkTrue a, Lit.mkTrue b]
+                aux3 (Fml.Or (Fml.Or a b) (Fml.Or c d)) = aux3 a ++ aux3 b ++ aux3 c ++ aux3 d
+                aux3 (Fml.Or (Fml.Not (Fml.Final a)) (Fml.Or b c)) = [Lit.mkFalse a] ++ aux3 b ++ aux3 c
+                aux3 (Fml.Or (Fml.Final a) (Fml.Or b c)) = [Lit.mkTrue a] ++ aux3 b ++ aux3 c
+                aux3 (Fml.Or (Fml.Or b c) (Fml.Final a)) = aux3 b ++ aux3 c ++ [Lit.mkTrue a]
+                aux3 (Fml.Or (Fml.Or b c) (Fml.Not (Fml.Final a))) = aux3 b ++ aux3 c ++ [Lit.mkFalse a]
+                aux3 (Fml.Or (Fml.Not (Fml.Final a)) (Fml.Final b)) = [Lit.mkFalse a, Lit.mkTrue b]
                 aux3 (Fml.Or (Fml.Final a) (Fml.Not (Fml.Final b))) = [Lit.mkTrue a, Lit.mkFalse b]
                 aux3 (Fml.Or (Fml.Not (Fml.Final a)) (Fml.Not (Fml.Final b))) = [Lit.mkFalse a, Lit.mkFalse b]
-                aux3 (Fml.Or (Fml.Final a) (Fml.Final b)) = [Lit.mkFalse a, Lit.mkTrue b]
+                aux3 (Fml.Or (Fml.Final a) (Fml.Final b)) = [Lit.mkTrue a, Lit.mkTrue b]
                 aux3 (Fml.Final  a) = [Lit.mkTrue a]
                 aux3 (Fml.Not (Fml.Final  a)) = [Lit.mkFalse a]
         aux (Fml.Final  a) = [Clause.mkClause [Lit.mkTrue a]]
