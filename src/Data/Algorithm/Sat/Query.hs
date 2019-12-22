@@ -54,10 +54,7 @@ extractAllFirst :: Eq a => Fml.Fml a -> [[(Var.Var a, Bool)]]
 extractAllFirst f = [fst n | n <- getAllTrue f]
 
 satisfyingAssignments :: (Ord a) => Fml.Fml a -> [Assignment.Assignment a]
-satisfyingAssignments f = [aux n | n <- extractAllFirst f]
-    where
-        aux l = let assign = Assignment.mkEmpty in 
-            Assignment.insertAll (Lit.mkAllValues l) assign
+satisfyingAssignments f = [Assignment.insertAll (Lit.mkAllValues n) Assignment.mkEmpty | n <- extractAllFirst f]
 
 -- tautology :: (Ord a) => Fml.Fml a -> Bool
 -- tautology
