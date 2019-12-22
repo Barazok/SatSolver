@@ -40,7 +40,7 @@ booltable (a:as) = [(a,b) : r | b <- bools, r <- booltable as]
 
 -- variable assignments and corresponding evaluation of an expression
 truthtable :: (Eq a) => Fml.Fml a -> [([(Var.Var a, Bool)], Bool)]
-truthtable e = [(bs, evaluate e bs) | bs <- booltable (Solver.getVars e)]
+truthtable e = [(bs, evaluate e bs) | bs <- booltable (Fml.vars e)]
 
 getAllTrue :: (Eq a) => Fml.Fml a -> [([(Var.Var a, Bool)], Bool)]
 getAllTrue = filter (\(_,a) -> a == True) . truthtable . Fml.toCNF
@@ -50,14 +50,14 @@ rmdups [] = []
 rmdups (x:xs) | x `elem` xs = rmdups xs
               | otherwise = x : rmdups xs
 
-extractAllFirst :: (Eq a) => Fml.Fml a -> [(Var.Var a, Bool)]
-extractAllFirst f = rmdups (concat [fst n | n <- getAllTrue f])
+extractAllFirst :: Eq a => Fml.Fml a -> [[(Var.Var a, Bool)]]
+extractAllFirst f = [fst n | n <- getAllTrue f]
 
 satisfyingAssignments :: (Ord a) => Fml.Fml a -> [Assignment.Assignment a]
 satisfyingAssignments f = [aux n | n <- extractAllFirst f]
     where
-        aux (v,True) = Assignment.insert (Lit.mkTrue v) Assignment.mkEmpty
-        aux (v,False) = Assignment.insert (Lit.mkFalse v) Assignment.mkEmpty
+        aux l = let assign = Assignment.mkEmpty in 
+            Assignment.insertAll (Lit.mkAllValues l) assign
 
 -- tautology :: (Ord a) => Fml.Fml a -> Bool
 -- tautology

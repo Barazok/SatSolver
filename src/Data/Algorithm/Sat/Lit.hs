@@ -6,6 +6,7 @@ module Data.Algorithm.Sat.Lit
   -- * Making
 , mkFalse
 , mkTrue
+, mkAllValues
 , mkTrueAValue
 , mkFalseAValue
 
@@ -59,6 +60,15 @@ neg (T v) = F v
 getVar :: Lit a -> Var.Var a
 getVar (F v) = v
 getVar (T v) = v
+
+mkAllValues :: (Eq a) => [(Var.Var a, Bool)] -> [Lit a]
+mkAllValues [] = []
+mkAllValues [(v,b)]
+  | b == True = [mkTrue v]
+  | b == False = [mkFalse v]
+mkAllValues ((v,b):ls)
+  | b == True = [mkTrue v] ++ mkAllValues ls
+  | b == False = [mkFalse v] ++ mkAllValues ls
 
 mkTrueAValue :: (Eq a) => a -> Lit a
 mkTrueAValue a = mkTrue (Fml.vars (Fml.mkVar a) !! 0)

@@ -1,7 +1,5 @@
 module Data.Algorithm.Sat.Solver(
-    getVarsp
-  , getVars
-  , fromFml
+    fromFml
 --    solve
 ) where
 
@@ -14,25 +12,10 @@ import qualified Data.Algorithm.Sat.Solver.CNFFml.Clause as Clause
 import qualified Data.Map.Strict as Map
 import qualified Data.List as List
 
-
-getVarsp :: Fml.Fml a -> [Var.Var a]
-getVarsp f
-    | Fml.Or a b    <- f = getVarsp a ++ getVarsp b
-    | Fml.And a b   <- f = getVarsp a ++ getVarsp b
-    | Fml.Imply a b <- f = getVarsp a ++ getVarsp b
-    | Fml.Equiv a b <- f = getVarsp a ++ getVarsp b
-    | Fml.XOr a b   <- f = getVarsp a ++ getVarsp b
-    | Fml.Not (Fml.Final a)   <- f = [a]
-    | Fml.Not a     <- f = getVarsp a
-    | Fml.Final a   <- f = [a]
-
-getVars :: (Eq a) => Fml.Fml a -> [Var.Var a]
-getVars = List.nub . getVarsp
-
 -- |'solve' @f@ calculate an assignment of the propositional variables that makes
 --              the formula f logically true
 -- solve :: (Ord a) => Fml.Fml a -> Maybe (Assignment.Assignment a) 
-solve f = maximum (getVars (Fml.toCNF f))
+solve f = maximum (Fml.vars (Fml.toCNF f))
 
 {- solve (Fml.Final a) = Just (Assignment.insert (Lit.mkTrue a) empty)
 solve (Fml.Not (Fml.Final a)) = Just (Assignment.insert (Lit.mkFalse a) empty)

@@ -3,6 +3,7 @@ module Data.Algorithm.Sat.Assignment (
     mkEmpty,
     lokup,
     insert,
+    insertAll
     ) where
 import qualified Data.List as L
 import qualified Data.Tuple as T
@@ -30,3 +31,8 @@ lokup v = M.lookup v . getMap
 insert :: (Ord a) => Lit.Lit a -> Assignment a -> Assignment a
 insert (Lit.F v) = Assignment . M.insert v False . getMap
 insert (Lit.T v) = Assignment . M.insert v True . getMap
+
+insertAll :: (Ord a) => [Lit.Lit a] -> Assignment a -> Assignment a
+insertAll [] a = a
+insertAll [x] a = insert x a
+insertAll (l:ls) a = insert l (insertAll ls a)
