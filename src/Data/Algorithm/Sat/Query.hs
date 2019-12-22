@@ -2,6 +2,7 @@ module Data.Algorithm.Sat.Query (
     satisfiable,
     satisfyingAssignment,
     satisfyingAssignments,
+    truthtable,
     -- tautology
     ) where
 
