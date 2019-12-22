@@ -46,7 +46,7 @@ getAllTrue :: (Eq a) => Fml.Fml a -> [([(Var.Var a, Bool)], Bool)]
 getAllTrue = filter (\(_,a) -> a == True) . truthtable . Fml.toCNF
 
 extractAllFirst :: (Eq a) => Fml.Fml a -> [(Var.Var a, Bool)]
-extractAllFirst f = let list = getAllTrue f in if length list == 0 then [] else [fst n | n <- list] !! 0
+extractAllFirst f = concat [fst n | n <- getAllTrue f]
 
 satisfyingAssignments :: (Ord a) => Fml.Fml a -> [Assignment.Assignment a]
 satisfyingAssignments f = [aux n | n <- extractAllFirst f]
