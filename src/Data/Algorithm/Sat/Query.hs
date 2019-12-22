@@ -45,14 +45,19 @@ truthtable e = [(bs, evaluate e bs) | bs <- booltable (Solver.getVars e)]
 getAllTrue :: (Eq a) => Fml.Fml a -> [([(Var.Var a, Bool)], Bool)]
 getAllTrue = filter (\(_,a) -> a == True) . truthtable . Fml.toCNF
 
+rmdups :: Eq a => [a] -> [a]
+rmdups [] = []
+rmdups (x:xs) | x `elem` xs = rmdups xs
+              | otherwise = x : rmdups xs
+
 extractAllFirst :: (Eq a) => Fml.Fml a -> [(Var.Var a, Bool)]
-extractAllFirst f = concat [fst n | n <- getAllTrue f]
+extractAllFirst f = rmdups (concat [fst n | n <- getAllTrue f])
 
 satisfyingAssignments :: (Ord a) => Fml.Fml a -> [Assignment.Assignment a]
 satisfyingAssignments f = [aux n | n <- extractAllFirst f]
     where
-        aux (v,True) = let assign = Assignment.mkEmpty in Assignment.insert (Lit.mkTrue v) assign
-        aux (v,False) = let assign = Assignment.mkEmpty in Assignment.insert (Lit.mkFalse v) assign
+        aux (v,True) = Assignment.insert (Lit.mkTrue v) Assignment.mkEmpty
+        aux (v,False) = Assignment.insert (Lit.mkFalse v) Assignment.mkEmpty
 
 -- tautology :: (Ord a) => Fml.Fml a -> Bool
 -- tautology
