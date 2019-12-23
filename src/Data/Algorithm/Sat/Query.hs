@@ -23,21 +23,16 @@ satisfiable = Maybe.isJust . satisfyingAssignment
 satisfyingAssignment :: (Ord a) => Fml.Fml a -> Maybe (Assignment.Assignment a)
 satisfyingAssignment = Maybe.listToMaybe . satisfyingAssignments
 
--- evaluates an expression
 evaluate :: (Eq a) => Fml.Fml a -> [(Var.Var a, Bool)] -> Bool
 evaluate (Fml.Final f) bs = Maybe.fromJust (lookup f bs)
 evaluate (Fml.Not e) bs = not (evaluate e bs)
 evaluate (Fml.And e1 e2) bs = evaluate e1 bs && evaluate e2 bs
 evaluate (Fml.Or e1 e2) bs = evaluate e1 bs || evaluate e2 bs
 
-bools = [True, False]
-
--- all possible combinations of variable assignments
 booltable :: [Var.Var v] -> [[(Var.Var v, Bool)]]
 booltable [] = [[]]
-booltable (a:as) = [(a,b) : r | b <- bools, r <- booltable as]
+booltable (a:as) = [(a,b) : r | b <- [True, False], r <- booltable as]
 
--- variable assignments and corresponding evaluation of an expression
 truthtable :: (Eq a) => Fml.Fml a -> [([(Var.Var a, Bool)], Bool)]
 truthtable e = [(bs, evaluate e bs) | bs <- booltable (Fml.vars e)]
 
