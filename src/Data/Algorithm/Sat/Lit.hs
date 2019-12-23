@@ -7,8 +7,6 @@ module Data.Algorithm.Sat.Lit
 , mkFalse
 , mkTrue
 , mkAllValues
-, mkTrueAValue
-, mkFalseAValue
 
   -- * Querying
 , getVar
@@ -69,9 +67,3 @@ mkAllValues [(v,b)]
 mkAllValues ((v,b):ls)
   | b == True = [mkTrue v] ++ mkAllValues ls
   | b == False = [mkFalse v] ++ mkAllValues ls
-
-mkTrueAValue :: (Eq a) => a -> Lit a
-mkTrueAValue a = mkTrue (Fml.vars (Fml.mkVar a) !! 0)
-
-mkFalseAValue :: (Eq a) => a -> Lit a
-mkFalseAValue a = mkFalse (Fml.vars (Fml.mkVar a) !! 0)
