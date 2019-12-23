@@ -102,10 +102,12 @@ mkVar a = Final (Var.mk a)
 
 -- |'multOr' @v@ returns a Or formula composed by all formulas
 multOr :: [Fml a] -> Fml a
+multOr [] = error "No fml passed"
 multOr [f] = f
 multOr (f:fs) = Or f (multOr fs)
 
 -- |'multAnd' @v@ returns a And formula composed by all formulas
 multAnd :: [Fml a] -> Fml a
+multAnd [] = error "No fml passed"
 multAnd [f] = f
 multAnd (f:fs) = And f (multAnd fs)
