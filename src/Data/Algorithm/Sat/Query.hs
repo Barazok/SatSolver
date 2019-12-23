@@ -4,8 +4,8 @@ module Data.Algorithm.Sat.Query (
     satisfyingAssignments,
     truthtable,
     getAllTrue,
-    extractAllFirst,
-    -- tautology
+    getAFalse,
+    tautology
     ) where
 
 import qualified Data.Maybe as Maybe
@@ -45,11 +45,11 @@ truthtable e = [(bs, evaluate e bs) | bs <- booltable (Fml.vars e)]
 getAllTrue :: (Eq a) => Fml.Fml a -> [([(Var.Var a, Bool)], Bool)]
 getAllTrue = filter (\(_,a) -> a == True) . truthtable . Fml.toCNF
 
-extractAllFirst :: Eq a => Fml.Fml a -> [[(Var.Var a, Bool)]]
-extractAllFirst f = [fst n | n <- getAllTrue f]
+getAFalse :: (Eq a) => Fml.Fml a -> Maybe ([(Var.Var a, Bool)], Bool)
+getAFalse = Maybe.listToMaybe . filter (\(_,a) -> a == False) . truthtable . Fml.toCNF
 
 satisfyingAssignments :: (Ord a) => Fml.Fml a -> [Assignment.Assignment a]
-satisfyingAssignments f = [Assignment.insertAll (Lit.mkAllValues n) Assignment.mkEmpty | n <- extractAllFirst f]
+satisfyingAssignments f = [Assignment.insertAll (Lit.mkAllValues n) Assignment.mkEmpty | n <- [fst n | n <- getAllTrue f]]
 
--- tautology :: (Ord a) => Fml.Fml a -> Bool
--- tautology
+tautology :: (Ord a) => Fml.Fml a -> Bool
+tautology = not . Maybe.isJust . getAFalse
