@@ -17,6 +17,4 @@ make
 
 ```bash
 make clean
-cd ..
-rm -fr SatSolver
 ```
