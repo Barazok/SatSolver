@@ -9,7 +9,7 @@ module Data.Algorithm.Sat.Fml.Examples
 , fml7
 , fml8
 , fml9
-, fml10
+-- , fml10
 -- , fml11
 -- , fml12
 -- , fml13
@@ -91,13 +91,13 @@ fml9 = Fml.multAnd [f, g, h, i]
     h = Fml.Equiv (Fml.And vA vB) (Fml.And vC (Fml.Not vD))
     i = Fml.Imply (Fml.And vA vB) (Fml.Or (Fml.And vC vD) (Fml.And vE (Fml.Not vF)))
 
-fml10 :: Fml.Fml Char
-fml10 = Fml.multAnd [p1, p2, p3, p4]
-  where
-    p1 = Fml.Model.atLeast 3 [vA, vB, vC, vD, vE, vF]
-    p2 = Fml.multOr [Fml.Not vA, Fml.Not vB, vC, vF]
-    p3 = Fml.multOr [Fml.Not vB, Fml.Not vD, Fml.Not vE]
-    p4 = Fml.Imply (Fml.Or vA vB) (Fml.And vC vE)
+-- fml10 :: Fml.Fml Char
+-- fml10 = Fml.multAnd [p1, p2, p3, p4]
+--   where
+--     p1 = Fml.Model.atLeast 3 [vA, vB, vC, vD, vE, vF]
+--     p2 = Fml.multOr [Fml.Not vA, Fml.Not vB, vC, vF]
+--     p3 = Fml.multOr [Fml.Not vB, Fml.Not vD, Fml.Not vE]
+--     p4 = Fml.Imply (Fml.Or vA vB) (Fml.And vC vE)
 
 -- fml11 :: Fml.Fml Char
 -- fml11 = Fml.And p1 p2
