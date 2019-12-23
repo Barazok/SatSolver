@@ -80,7 +80,7 @@ getVars f
 -- >>> let v = vars (And (Final (mk 'A')) (Final (mk 'B')))
 -- [Var 'A', Var 'B']
 vars :: (Eq a) => Fml a -> [Var.Var a]
-vars f = List.nub (getVars f)
+vars = List.nub . getVars
 
 -- |'prettyPrinter' @f@ returns a pretty string of @f@
 prettyPrinter :: (Show a) => Fml a -> String
@@ -98,7 +98,7 @@ prettyPrinter f
 -- >>> let v = mkVar 'A'
 -- Var 'A'
 mkVar :: a -> Fml a
-mkVar a = Final (Var.mk a)
+mkVar = Final . Var.mk
 
 -- |'multOr' @v@ returns a Or formula composed by all formulas
 multOr :: [Fml a] -> Fml a

@@ -22,10 +22,10 @@ instance (Show a) => Show (CNFFml a) where
     show CNFFml { getClauses = ls } = L.intercalate " & " (L.map show ls)
 
 mkCNFFml :: [Solver.Clause a] -> CNFFml a
-mkCNFFml ls = CNFFml ls
+mkCNFFml = CNFFml
 
 numberClauseInCNFFml :: CNFFml a -> Int
-numberClauseInCNFFml (CNFFml ls) = L.length ls
+numberClauseInCNFFml = L.length . getAllClauses
 
 uniqueCNFFml :: CNFFml a -> Bool
 uniqueCNFFml c = 1 == numberClauseInCNFFml c

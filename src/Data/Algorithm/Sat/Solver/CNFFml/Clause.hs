@@ -15,10 +15,10 @@ instance (Show a) => Show (Clause a) where
     show Clause { getLits = ls } = "(" ++ L.intercalate " | " (L.map show ls) ++ ")"
 
 mkClause :: (Ord a) => [Lit.Lit a] -> Clause a
-mkClause ls = Clause ls
+mkClause = Clause
 
 numberLitInClause :: Clause a -> Int
-numberLitInClause (Clause ls) = L.length ls
+numberLitInClause = L.length . getLiterals
 
 uniqueClause :: Clause a -> Bool
 uniqueClause c = 1 == numberLitInClause c
