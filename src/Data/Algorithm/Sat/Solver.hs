@@ -1,6 +1,6 @@
 module Data.Algorithm.Sat.Solver(
     fromFml
---    solve
+    , solve
 ) where
 
 import qualified Data.Algorithm.Sat.Var as Var
@@ -11,15 +11,11 @@ import qualified Data.Algorithm.Sat.Solver.CNFFml as CNFFml
 import qualified Data.Algorithm.Sat.Solver.CNFFml.Clause as Clause
 import qualified Data.Map.Strict as Map
 import qualified Data.List as List
+import qualified Data.Algorithm.Sat.Query as Query
 
--- |'solve' @f@ calculate an assignment of the propositional variables that makes
---              the formula f logically true
--- solve :: (Ord a) => Fml.Fml a -> Maybe (Assignment.Assignment a) 
-solve f = maximum (Fml.vars (Fml.toCNF f))
-
-{- solve (Fml.Final a) = Just (Assignment.insert (Lit.mkTrue a) empty)
-solve (Fml.Not (Fml.Final a)) = Just (Assignment.insert (Lit.mkFalse a) empty)
-solve (Fml.Or a b) = solve a  -}
+-- |'solve' @f@ calculate an assignment of the propositional variables that makes the formula f logically true
+solve :: (Ord a) => Fml.Fml a -> Maybe (Assignment.Assignment a) 
+solve = Query.satisfyingAssignment . Fml.toCNF
 
 fromFml :: (Eq a, Ord a) => Fml.Fml a -> CNFFml.CNFFml a
 fromFml = CNFFml.mkCNFFml . aux . Fml.toCNF

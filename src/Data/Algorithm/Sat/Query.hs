@@ -11,7 +11,6 @@ module Data.Algorithm.Sat.Query (
 import qualified Data.Maybe as Maybe
 import qualified Data.Algorithm.Sat.Assignment as Assignment
 import qualified Data.Algorithm.Sat.Fml as Fml
-import qualified Data.Algorithm.Sat.Solver as Solver
 import qualified Data.Algorithm.Sat.Solver.CNFFml as CNFFml
 import qualified Data.Algorithm.Sat.Solver.CNFFml.Clause as Clause
 import qualified Data.Algorithm.Sat.Var as Var
@@ -43,10 +42,10 @@ truthtable :: (Eq a) => Fml.Fml a -> [([(Var.Var a, Bool)], Bool)]
 truthtable e = [(bs, evaluate e bs) | bs <- booltable (Fml.vars e)]
 
 getAllTrue :: (Eq a) => Fml.Fml a -> [([(Var.Var a, Bool)], Bool)]
-getAllTrue = filter (\(_,a) -> a == True) . truthtable . Fml.toCNF
+getAllTrue = filter (\(_,a) -> a == True) . truthtable
 
 getAFalse :: (Eq a) => Fml.Fml a -> Maybe ([(Var.Var a, Bool)], Bool)
-getAFalse = Maybe.listToMaybe . filter (\(_,a) -> a == False) . truthtable . Fml.toCNF
+getAFalse = Maybe.listToMaybe . filter (\(_,a) -> a == False) . truthtable
 
 satisfyingAssignments :: (Ord a) => Fml.Fml a -> [Assignment.Assignment a]
 satisfyingAssignments f = [Assignment.insertAll (Lit.mkAllValues n) Assignment.mkEmpty | n <- [fst n | n <- getAllTrue f]]
