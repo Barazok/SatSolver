@@ -15,13 +15,13 @@ atLeast :: (Ord a) => Int -> [Fml.Fml a] -> Fml.Fml a
 atLeast i f = Fml.multAnd $ take i (map (fst) (List.filter ((== True).snd) [(c, Query.satisfiable c) | c <- f]))
 
 anyOf :: (Ord a)=>[Fml.Fml a]-> Fml.Fml a
-anyOf f = (take 1 (map (fst) (List.filter ((== True).snd) [(c, Query.satisfiable c) | c <- f]))) !! 0
+anyOf f = atLeast 1 f
 
 noneOf :: (Ord a)=>[Fml.Fml a]-> Fml.Fml a
 noneOf f = Fml.multAnd [Fml.Not c | c <- f]
 
 allOf :: (Ord a)=>[Fml.Fml a]-> Fml.Fml a
-allOf f = Fml.multAnd [c | c <- f]
+allOf f = atLeast (length f) f
 
 exactlyOneOf :: (Ord a) => [Fml.Fml a]-> Fml.Fml a
-exactlyOneOf f = (take 1 (map (fst) (List.filter ((== True).snd) [(c, Query.satisfiable c) | c <- f]))) !! 0
+exactlyOneOf f = if length (List.filter ((== True).snd) [(c, Query.satisfiable c) | c <- f]) == 1 then anyOf f else allOf f
